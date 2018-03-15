@@ -19,6 +19,7 @@ module RubySerial
     CREAD = 0x00000800
     CCTS_OFLOW = 0x00010000 # Clearing this disables RTS AND CTS.
     TCSANOW = 0
+    TCSAFLUSH = 2
     NCCS = 20
 
     DATA_BITS = {
@@ -170,6 +171,10 @@ module RubySerial
     }
 
     class Termios < FFI::Struct
+      TCIFLUSH  = 1  # Discard data received but not yet read.
+      TCOFLUSH  = 2  # Discard data written but not yet sent.
+      TCIOFLUSH = 3  # Discard all pending data.
+
       layout  :c_iflag, :ulong,
               :c_oflag, :ulong,
               :c_cflag, :ulong,
@@ -186,5 +191,6 @@ module RubySerial
     attach_function :close, [:int], :int, blocking: true
     attach_function :write, [:int, :pointer,  :int],:int, blocking: true
     attach_function :read, [:int, :pointer,  :int],:int, blocking: true
+    attach_function :tcflush, [:int, :int],:int, blocking: true
   end
 end

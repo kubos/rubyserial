@@ -1,5 +1,4 @@
 # Copyright (c) 2014-2016 The Hybrid Group
-
 class Serial
   def initialize(address, baude_rate=9600, data_bits=8, parity=:none)
     file_opts = RubySerial::Posix::O_RDWR | RubySerial::Posix::O_NOCTTY | RubySerial::Posix::O_NONBLOCK
@@ -23,7 +22,7 @@ class Serial
 
     @config = build_config(baude_rate, data_bits, parity)
 
-    err = RubySerial::Posix.tcsetattr(@fd, RubySerial::Posix::TCSANOW, @config)
+    err = RubySerial::Posix.tcsetattr(@fd, RubySerial::Posix::TCSAFLUSH, @config)
     if err == -1
       raise RubySerial::Error, RubySerial::Posix::ERROR_CODES[FFI.errno]
     end
@@ -55,6 +54,7 @@ class Serial
       end
     end
 
+    RubySerial::Posix.tcflush(@fd, RubySerial::Posix::Termios::TCIOFLUSH)
     # return number of bytes written
     n
   end
