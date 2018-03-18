@@ -18,8 +18,15 @@ module RubySerial
     CLOCAL = 0x00008000
     CREAD = 0x00000800
     CCTS_OFLOW = 0x00010000 # Clearing this disables RTS AND CTS.
-    TCSANOW = 0
-    TCSAFLUSH = 2
+
+    # tcsetattr optional_actions flags
+    # See: https://en.wikibooks.org/wiki/Serial_Programming/termios
+    # And: https://github.com/lattera/glibc/blob/master/bits/termios.h#L324
+    #
+    TCSANOW = 0    # The configuration is changed immediately.
+    TCSADRAIN = 1  # The configuration is changed after all the output written to fd has been transmitted. This prevents the change from corrupting in-transmission data.
+    TCSAFLUSH = 2  # Same as above but any data received and not read will be discarded.
+
     NCCS = 20
 
     DATA_BITS = {
